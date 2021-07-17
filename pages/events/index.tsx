@@ -1,8 +1,10 @@
-const EventsPage = () => {
+import Layout from '../../components/Layout';
+
+const EventsPage: React.FC = () => {
   return (
-    <div>
+    <Layout>
       <h1>My Events</h1>
-    </div>
+    </Layout>
   );
 };
 
