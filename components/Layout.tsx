@@ -2,7 +2,7 @@ import Head from 'next/head';
 
 import Header from './Header';
 import Footer from './Footer';
-import styles from '../styles/Layout.module.css';
+import styles from '@/styles/Layout.module.css';
 
 interface LayoutProps {
   title?: string;
