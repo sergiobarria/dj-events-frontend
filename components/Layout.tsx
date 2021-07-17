@@ -17,7 +17,7 @@ const Layout: React.FC<LayoutProps> = ({
   children,
 }) => {
   return (
-    <div>
+    <div className={styles.mainContainer}>
       <Head>
         <title>{title}</title>
         <meta name='description' content={description} />

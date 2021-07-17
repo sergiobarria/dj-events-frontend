@@ -3,3 +3,14 @@
   max-width: 960px;
   padding: 0 30px;
 }
+
+.mainContainer {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.mainContainer main {
+  margin-bottom: auto;
+}
