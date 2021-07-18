@@ -1,11 +1,92 @@
-import Layout from '@/components/Layout';
+import { GetStaticProps, GetStaticPaths } from 'next';
+import { ParsedUrlQuery } from 'querystring';
+import Link from 'next/link';
+import Image from 'next/image';
+import { FaPencilAlt, FaTimes } from 'react-icons/fa';
 
-const EventPage = () => {
+import { API_URL } from '@/config/index';
+import Layout from '@/components/Layout';
+import { Event } from '../../types';
+
+import styles from '@/styles/Event.module.css';
+
+interface PageProps {
+  evt: Event;
+}
+
+interface IParams extends ParsedUrlQuery {
+  slug: string;
+}
+
+const EventPage: React.FC<PageProps> = ({ evt }) => {
+  const deleteEventHandler = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    console.log('delete');
+  };
+
   return (
     <Layout>
-      <h1>My Event</h1>
+      <div className={styles.event}>
+        <div className={styles.controls}>
+          <Link href={`/events/edit/${evt.id}`}>
+            <a>
+              <FaPencilAlt /> Edit Event
+            </a>
+          </Link>
+          <a href='#' className={styles.delete} onClick={deleteEventHandler}>
+            <FaTimes /> Delete Event
+          </a>
+        </div>
+
+        <span>
+          {evt.date} at {evt.time}
+        </span>
+        <h1>{evt.name}</h1>
+        {evt.image && (
+          <div className={styles.image}>
+            <Image src={evt.image} width={960} height={600} alt='Cover Image' />
+          </div>
+        )}
+
+        <h3>Performers:</h3>
+        <p>{evt.performers}</p>
+        <h3>Description:</h3>
+        <p>{evt.description}</p>
+        <h3>Venue: {evt.venue}</h3>
+        <p>{evt.address}</p>
+
+        <Link href='/events'>
+          <a className={styles.back}>{'<'} Go Back</a>
+        </Link>
+      </div>
     </Layout>
   );
 };
 
 export default EventPage;
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const res = await fetch(`${API_URL}/api/events`);
+  const events: Event[] = await res.json();
+
+  const paths = events.map((evt) => ({
+    params: { slug: evt.slug },
+  }));
+
+  return {
+    paths,
+    fallback: true,
+  };
+};
+
+export const getStaticProps: GetStaticProps = async (context) => {
+  const { slug } = context.params as IParams;
+  const res = await fetch(`${API_URL}/api/events/${slug}`);
+  const events = await res.json();
+
+  return {
+    props: {
+      evt: events[0],
+    },
+    revalidate: 1,
+  };
+};
