@@ -6,12 +6,12 @@ import { FaPencilAlt, FaTimes } from 'react-icons/fa';
 
 import { API_URL } from '@/config/index';
 import Layout from '@/components/Layout';
-import { Event } from '../../types';
+import { IEventLong } from '../../types';
 
 import styles from '@/styles/Event.module.css';
 
 interface PageProps {
-  evt: Event;
+  evt: IEventLong;
 }
 
 interface IParams extends ParsedUrlQuery {
@@ -38,12 +38,17 @@ const EventPage: React.FC<PageProps> = ({ evt }) => {
         </div>
 
         <span>
-          {evt.date} at {evt.time}
+          {new Date(evt.date).toLocaleDateString('en-US')} at {evt.time}
         </span>
         <h1>{evt.name}</h1>
         {evt.image && (
           <div className={styles.image}>
-            <Image src={evt.image} width={960} height={600} alt='Cover Image' />
+            <Image
+              src={evt.image.formats.medium.url}
+              width={960}
+              height={600}
+              alt='Cover Image'
+            />
           </div>
         )}
 
@@ -65,8 +70,8 @@ const EventPage: React.FC<PageProps> = ({ evt }) => {
 export default EventPage;
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const res = await fetch(`${API_URL}/api/events`);
-  const events: Event[] = await res.json();
+  const res = await fetch(`${API_URL}/events`);
+  const events: IEventLong[] = await res.json();
 
   const paths = events.map((evt) => ({
     params: { slug: evt.slug },
@@ -80,7 +85,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const { slug } = context.params as IParams;
-  const res = await fetch(`${API_URL}/api/events/${slug}`);
+  const res = await fetch(`${API_URL}/events?slug=${slug}`);
   const events = await res.json();
 
   return {

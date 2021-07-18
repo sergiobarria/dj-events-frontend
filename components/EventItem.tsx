@@ -1,11 +1,11 @@
 import Link from 'next/link';
 import Image from 'next/image';
 
-import { Event } from '../types';
+import { IEventLong } from '../types';
 import styles from '@/styles/EventItem.module.css';
 
 interface ComponentProps {
-  evt: Event;
+  evt: IEventLong;
 }
 
 const EventItem: React.FC<ComponentProps> = ({ evt }) => {
@@ -13,7 +13,11 @@ const EventItem: React.FC<ComponentProps> = ({ evt }) => {
     <div className={styles.event}>
       <div className={styles.img}>
         <Image
-          src={evt.image ? evt.image : '/images/event-default.png'}
+          src={
+            evt.image
+              ? evt.image.formats.thumbnail.url
+              : '/images/event-default.png'
+          }
           width={170}
           height={100}
           alt='Event cover image'
@@ -22,7 +26,7 @@ const EventItem: React.FC<ComponentProps> = ({ evt }) => {
 
       <div className={styles.info}>
         <span>
-          {evt.date} at {evt.time}
+          {new Date(evt.date).toLocaleDateString('en-US')} at {evt.time}
         </span>
         <h3>{evt.name}</h3>
       </div>

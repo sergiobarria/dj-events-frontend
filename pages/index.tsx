@@ -4,10 +4,10 @@ import Link from 'next/link';
 import { API_URL } from '@/config/index';
 import Layout from '@/components/Layout';
 import EventItem from '@/components/EventItem';
-import { Event } from '../types';
+import { IEventLong } from '../types';
 
 interface HomePageProps {
-  events: Event[];
+  events: IEventLong[];
 }
 
 const HomePage: React.FC<HomePageProps> = ({ events }) => {
@@ -31,12 +31,12 @@ const HomePage: React.FC<HomePageProps> = ({ events }) => {
 export default HomePage;
 
 export const getStaticProps: GetStaticProps = async () => {
-  const res = await fetch(`${API_URL}/api/events`);
+  const res = await fetch(`${API_URL}/events?_sort=date:ASC&_limit=3`);
   const events: Event[] = await res.json();
 
   return {
     props: {
-      events: events.slice(0, 3),
+      events,
     },
     revalidate: 1,
   };
