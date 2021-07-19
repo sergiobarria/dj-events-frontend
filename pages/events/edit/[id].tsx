@@ -5,7 +5,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ParsedUrlQuery } from 'querystring';
 import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import moment from 'moment';
 import { FaImage } from 'react-icons/fa';
 

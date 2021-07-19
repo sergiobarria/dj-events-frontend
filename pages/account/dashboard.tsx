@@ -4,7 +4,6 @@ import Layout from '@/components/Layout';
 import { parseCookies } from 'helpers';
 import { API_URL } from '@/config/index';
 import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 
 import { IEventLong } from 'types';
 import styles from '@/styles/DashboardEvent.module.css';
