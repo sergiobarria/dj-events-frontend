@@ -1,10 +1,11 @@
-import { GetStaticProps, GetStaticPaths } from 'next';
+import { GetStaticProps, GetStaticPaths, GetServerSideProps } from 'next';
 import { ParsedUrlQuery } from 'querystring';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+// import EventMap from '@/components/EventMap';
 
 import { API_URL } from '@/config/index';
 import Layout from '@/components/Layout';
@@ -49,6 +50,8 @@ const EventPage: React.FC<PageProps> = ({ evt }) => {
         <h3>Venue: {evt.venue}</h3>
         <p>{evt.address}</p>
 
+        {/* <EventMap evt={evt} /> */}
+
         <Link href='/events'>
           <a className={styles.back}>{'<'} Go Back</a>
         </Link>
@@ -59,29 +62,41 @@ const EventPage: React.FC<PageProps> = ({ evt }) => {
 
 export default EventPage;
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  const res = await fetch(`${API_URL}/events`);
-  const events: IEventLong[] = await res.json();
+// export const getStaticPaths: GetStaticPaths = async () => {
+//   const res = await fetch(`${API_URL}/events`);
+//   const events: IEventLong[] = await res.json();
 
-  const paths = events.map((evt) => ({
-    params: { slug: evt.slug },
-  }));
+//   const paths = events.map((evt) => ({
+//     params: { slug: evt.slug },
+//   }));
 
-  return {
-    paths,
-    fallback: true,
-  };
-};
+//   return {
+//     paths,
+//     fallback: true,
+//   };
+// };
 
-export const getStaticProps: GetStaticProps = async (context) => {
-  const { slug } = context.params as IParams;
-  const res = await fetch(`${API_URL}/events?slug=${slug}`);
+// export const getStaticProps: GetStaticProps = async (context) => {
+//   const { slug } = context.params as IParams;
+//   const res = await fetch(`${API_URL}/events?slug=${slug}`);
+//   const events = await res.json();
+
+//   return {
+//     props: {
+//       evt: events[0],
+//     },
+//     revalidate: 1,
+//   };
+// };
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const { slug } = context.query as IParams;
+  const res = await fetch(`${API_URL}/events/?slug=${slug}`);
   const events = await res.json();
 
   return {
     props: {
       evt: events[0],
     },
-    revalidate: 1,
   };
 };

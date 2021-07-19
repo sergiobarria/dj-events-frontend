@@ -18,10 +18,10 @@ interface IUserLogin {
 interface IAuthContextData {
   user: IUser | null;
   error: string | null;
-  register?: ({ username, email, password }: IUser) => void;
-  login?: ({ email, password }: IUserLogin) => void;
-  logout?: () => void;
-  checkUserLoggedIn?: () => void;
+  register: ({ username, email, password }: IUser) => void;
+  login: ({ email, password }: IUserLogin) => void;
+  logout: () => void;
+  checkUserLoggedIn: () => void;
 }
 
 interface IAuthProviderProps {
