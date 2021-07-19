@@ -1,8 +1,11 @@
 import { GetStaticProps, GetStaticPaths } from 'next';
 import { ParsedUrlQuery } from 'querystring';
+import { useRouter } from 'next/router';
 import Link from 'next/link';
 import Image from 'next/image';
 import { FaPencilAlt, FaTimes } from 'react-icons/fa';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import { API_URL } from '@/config/index';
 import Layout from '@/components/Layout';
@@ -19,8 +22,24 @@ interface IParams extends ParsedUrlQuery {
 }
 
 const EventPage: React.FC<PageProps> = ({ evt }) => {
-  const deleteEventHandler = (event: React.MouseEvent<HTMLAnchorElement>) => {
-    console.log('delete');
+  const router = useRouter();
+
+  const deleteEventHandler = async (
+    event: React.MouseEvent<HTMLAnchorElement>
+  ) => {
+    if (confirm('Are you sure?')) {
+      const res = await fetch(`${API_URL}/events/${evt.id}`, {
+        method: 'DELETE',
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        toast.error(data.message);
+      } else {
+        router.push('/events');
+      }
+    }
   };
 
   return (
@@ -41,6 +60,7 @@ const EventPage: React.FC<PageProps> = ({ evt }) => {
           {new Date(evt.date).toLocaleDateString('en-US')} at {evt.time}
         </span>
         <h1>{evt.name}</h1>
+        <ToastContainer />
         {evt.image && (
           <div className={styles.image}>
             <Image
