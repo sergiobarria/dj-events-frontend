@@ -189,10 +189,13 @@ const EditEventPage: React.FC<{ evt: IEventLong }> = ({ evt }) => {
 
 export default EditEventPage;
 
-export const getServerSideProps: GetServerSideProps = async ({ params }) => {
-  const { id } = params as IParams;
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const { id } = context.params as IParams;
+  // const { req } = context;
   const res = await fetch(`${API_URL}/events/${id}`);
   const evt: IEventLong = await res.json();
+
+  // console.log(req.headers.cookie);
 
   return {
     props: {

@@ -1,4 +1,4 @@
-export interface User {
+export interface IUser {
   id: number;
   username: string;
   email: string;
@@ -64,7 +64,7 @@ export interface IEventLong {
   time: string;
   performers: string;
   description: string;
-  user: User;
+  user: IUser;
   published_at: string;
   created_at: string;
   updated_at: string;
