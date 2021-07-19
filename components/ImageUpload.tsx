@@ -6,9 +6,14 @@ import styles from '@/styles/Form.module.css';
 interface IImageUploadProps {
   evtId: number;
   imageUploaded: () => void;
+  token: string;
 }
 
-const ImageUpload: React.FC<IImageUploadProps> = ({ evtId, imageUploaded }) => {
+const ImageUpload: React.FC<IImageUploadProps> = ({
+  evtId,
+  imageUploaded,
+  token,
+}) => {
   const [image, setImage] = useState<File>();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -26,6 +31,9 @@ const ImageUpload: React.FC<IImageUploadProps> = ({ evtId, imageUploaded }) => {
 
       const res = await fetch(`${API_URL}/upload`, {
         method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
         body: formData,
       });
 

@@ -14,6 +14,7 @@ import Layout from '@/components/Layout';
 import { IEventLong } from '../../../types';
 import Modal from '@/components/Modal';
 import ImageUpload from '@/components/ImageUpload';
+import { parseCookies } from 'helpers';
 
 import styles from '@/styles/Form.module.css';
 
@@ -21,7 +22,10 @@ interface IParams extends ParsedUrlQuery {
   id: string;
 }
 
-const EditEventPage: React.FC<{ evt: IEventLong }> = ({ evt }) => {
+const EditEventPage: React.FC<{ evt: IEventLong; token: string }> = ({
+  evt,
+  token,
+}) => {
   const [values, setValues] = useState({
     name: evt.name,
     performers: evt.performers,
@@ -54,12 +58,16 @@ const EditEventPage: React.FC<{ evt: IEventLong }> = ({ evt }) => {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(values),
     });
 
     if (!res.ok) {
-      toast.error('Something went wrong');
+      if (res.status === 403 || res.status === 401) {
+        toast.error('Unauthorized');
+        return;
+      }
     } else {
       const evt = await res.json();
       router.push(`/events/${evt.slug}`);
@@ -181,7 +189,11 @@ const EditEventPage: React.FC<{ evt: IEventLong }> = ({ evt }) => {
       </div>
 
       <Modal show={showModal} onClose={() => setShowModal(false)}>
-        <ImageUpload evtId={evt.id} imageUploaded={imageUploaded} />
+        <ImageUpload
+          evtId={evt.id}
+          imageUploaded={imageUploaded}
+          token={token}
+        />
       </Modal>
     </Layout>
   );
@@ -191,15 +203,16 @@ export default EditEventPage;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { id } = context.params as IParams;
-  // const { req } = context;
+  const { req } = context;
   const res = await fetch(`${API_URL}/events/${id}`);
   const evt: IEventLong = await res.json();
 
-  // console.log(req.headers.cookie);
+  const { token } = parseCookies(req);
 
   return {
     props: {
       evt,
+      token,
     },
   };
 };

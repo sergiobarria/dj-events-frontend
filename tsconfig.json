@@ -19,6 +19,7 @@
       "@/styles/*": ["styles/*"],
       "@/config/*": ["config/*"],
       "@/context/*": ["context/*"],
+      "@/helpers/*": ["helpers/*"],
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
